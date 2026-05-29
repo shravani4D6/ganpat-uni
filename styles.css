@@ -236,7 +236,7 @@ select {
 .hero-media {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(180deg, rgba(8, 29, 52, 0.45), rgba(8, 29, 52, 0.15)), url("https://images.unsplash.com/photo-1517430816045-df4b7de11d1e?auto=format&fit=crop&w=1600&q=80");
+  background-image: linear-gradient(180deg, rgba(8, 29, 52, 0.35), rgba(8, 29, 52, 0.12)), url("./OIP.jpg");
   background-position: center, center;
   background-size: cover, cover;
   background-repeat: no-repeat, no-repeat;
@@ -650,6 +650,62 @@ select:focus {
   backdrop-filter: blur(4px);
 }
 
+.terms-dialog {
+  width: min(92vw, 760px);
+  max-height: min(86vh, 780px);
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.terms-dialog::backdrop {
+  background: rgba(8, 29, 52, 0.62);
+  backdrop-filter: blur(4px);
+}
+
+.terms-popup-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-height: 86vh;
+  padding: 30px;
+  overflow-y: auto;
+  background: #f7f8fb;
+}
+
+.terms-popup-panel h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1.08;
+}
+
+.terms-popup-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.terms-popup-grid article {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--white);
+}
+
+.terms-popup-grid h3 {
+  margin: 0 0 8px;
+  color: var(--navy);
+}
+
+.terms-popup-grid p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
 .login-panel {
   position: relative;
   padding: 30px;
@@ -771,6 +827,12 @@ select:focus {
   cursor: pointer;
 }
 
+.portal-check a {
+  color: #ff383f;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .login-terms-box {
   margin-top: 22px;
   padding: 16px;
@@ -794,16 +856,20 @@ select:focus {
 }
 
 .login-dialog {
+  position: fixed;
+  inset: 0;
   width: 100vw;
   max-width: none;
   height: 100vh;
   max-height: none;
+  margin: 0;
   border-radius: 0;
   background: transparent;
+  overflow: hidden;
 }
 
 .portal-auth {
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: #f7f8fb;
@@ -881,10 +947,13 @@ select:focus {
 .portal-form-pane {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 22px;
   padding: clamp(28px, 5vw, 70px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .portal-form-pane .close-login {

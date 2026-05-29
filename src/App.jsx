@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import logoUrl from "../ganpat logo 2.png";
 
 function UserIcon() {
@@ -69,6 +70,13 @@ const researchCards = [
   ["R&D", "Publications", "Research compendiums, journals, seed funding, and thrust area initiatives."],
 ];
 
+const termsItems = [
+  ["Student Account", "Login credentials are for authorized student use only and must not be shared."],
+  ["Information Accuracy", "Admission, exam, and fee details shown here are demo content for presentation."],
+  ["Responsible Use", "Users should not upload harmful content, misuse forms, or access restricted data."],
+  ["Privacy", "Submitted sign-in and enquiry fields in this demo are not connected to a server."],
+];
+
 function CardGrid({ cards }) {
   return (
     <div className="card-grid">
@@ -95,7 +103,7 @@ function ServicesList({ items, target }) {
   );
 }
 
-function Header() {
+function Header({ onLoginClick }) {
   return (
     <header className="site-header">
       <div className="notice-bar">
@@ -136,7 +144,7 @@ function Header() {
           ))}
         </div>
 
-        <button className="student-login-trigger" type="button" aria-label="Student login">
+        <button className="student-login-trigger" type="button" aria-label="Student login" onClick={onLoginClick}>
           <span className="login-icon" aria-hidden="true">
             <UserIcon />
           </span>
@@ -365,12 +373,7 @@ function HomePage() {
           <h2>Usage policy</h2>
         </div>
         <div className="terms-grid">
-          {[
-            ["Student Account", "Login credentials are for authorized student use only and must not be shared."],
-            ["Information Accuracy", "Admission, exam, and fee details shown here are demo content for presentation."],
-            ["Responsible Use", "Users should not upload harmful content, misuse forms, or access restricted data."],
-            ["Privacy", "Submitted sign-in and enquiry fields in this demo are not connected to a server."],
-          ].map(([title, text]) => (
+          {termsItems.map(([title, text]) => (
             <article key={title}>
               <h3>{title}</h3>
               <p>{text}</p>
@@ -408,9 +411,102 @@ function Footer() {
   );
 }
 
-function LoginDialog() {
+function TermsDialog({ open, onClose }) {
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    if (!dialog) {
+      return;
+    }
+
+    if (open) {
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+
+      dialog.scrollTop = 0;
+      window.requestAnimationFrame(() => {
+        dialog.scrollTop = 0;
+      });
+    }
+
+    if (!open && dialog.open) {
+      dialog.close();
+    }
+  }, [open]);
+
+  function handleCancel(event) {
+    event.preventDefault();
+    onClose();
+  }
+
   return (
-    <div className="login-dialog">
+    <dialog className="terms-dialog" ref={dialogRef} onCancel={handleCancel} aria-label="Terms and conditions popup">
+      <section className="terms-popup-panel">
+        <button className="close-login" type="button" aria-label="Close terms" onClick={onClose}>
+          x
+        </button>
+        <p className="eyebrow">Terms and conditions</p>
+        <h2>Usage policy</h2>
+        <p className="portal-subtitle">Please review these terms before signing in or creating an account.</p>
+        <div className="terms-popup-grid">
+          {termsItems.map(([title, text]) => (
+            <article key={title}>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </dialog>
+  );
+}
+
+function LoginDialog({ open, onClose, onOpenTerms }) {
+  const dialogRef = useRef(null);
+  const [activeTab, setActiveTab] = useState("signin");
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    if (!dialog) {
+      return;
+    }
+
+    if (open) {
+      setActiveTab("signin");
+
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+
+      dialog.scrollTop = 0;
+
+      window.requestAnimationFrame(() => {
+        dialog.scrollTop = 0;
+        dialog.querySelector(".portal-form-pane")?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      });
+    }
+
+    if (!open && dialog.open) {
+      dialog.close();
+    }
+  }, [open]);
+
+  function handleCancel(event) {
+    event.preventDefault();
+    onClose();
+  }
+
+  function handleTermsClick(event) {
+    event.preventDefault();
+    onOpenTerms();
+  }
+
+  return (
+    <dialog className="login-dialog" ref={dialogRef} onCancel={handleCancel} aria-label="Student login and signup dialog">
       <div className="portal-auth">
         <section className="portal-brand-pane">
           <div className="portal-brand-content">
@@ -423,11 +519,11 @@ function LoginDialog() {
         </section>
 
         <section className="portal-form-pane">
-          <button className="close-login" type="button" aria-label="Close login">
+          <button className="close-login" type="button" aria-label="Close login" onClick={onClose}>
             x
           </button>
 
-          <form className="auth-pane active" aria-label="Student sign in form">
+          <form className={`auth-pane ${activeTab === "signin" ? "active" : ""}`} aria-label="Student sign in form">
             <h2>Welcome Back</h2>
             <p className="portal-subtitle">Sign in to access your student portal</p>
             <label>
@@ -446,23 +542,25 @@ function LoginDialog() {
             </label>
             <label className="check-row portal-check">
               <input type="checkbox" required />
-              <span>I agree to the Ganpat University Terms & Conditions before login.</span>
+              <span>
+                I agree to the Ganpat University <a href="#terms" onClick={handleTermsClick}>Terms & Conditions</a> before login.
+              </span>
             </label>
             <button className="portal-submit" type="button">
               Sign In
             </button>
             <p className="auth-switch-text">
-              Do not have an account?{" "}
-              <button type="button">
+              Need a new account?{" "}
+              <button type="button" onClick={() => setActiveTab("signup")}>
                 Sign Up
               </button>
             </p>
-            <button className="back-home" type="button">
+            <button className="back-home" type="button" onClick={onClose}>
               Back to Home
             </button>
           </form>
 
-          <form className="auth-pane active" aria-label="Student sign up form">
+          <form className={`auth-pane ${activeTab === "signup" ? "active" : ""}`} aria-label="Student sign up form">
             <h2>Create Account</h2>
             <p className="portal-subtitle">Register to get started with your application</p>
             <div className="form-grid two">
@@ -499,33 +597,37 @@ function LoginDialog() {
             <label className="check-row portal-check">
               <input type="checkbox" required />
               <span>
-                I agree to the <a href="#terms" style={{color:'#ff383f', textDecoration:'underline'}}>Terms & Conditions</a> and Privacy Policy, and authorize Ganpat University to contact me by
-                Email, SMS, WhatsApp, RCS, or Voice Call regarding admission and student services.
+                I agree to the <a href="#terms" onClick={handleTermsClick}>Terms & Conditions</a> and Privacy Policy, and authorize Ganpat University to contact me by Email, SMS, WhatsApp,
+                RCS, or Voice Call regarding admission and student services.
               </span>
             </label>
             <button className="portal-submit" type="button">
               Create Account
             </button>
             <p className="auth-switch-text">
-              Already have an account?{" "}
-              <button type="button">
+              Already registered?{" "}
+              <button type="button" onClick={() => setActiveTab("signin")}>
                 Sign In
               </button>
             </p>
           </form>
         </section>
       </div>
-    </div>
+    </dialog>
   );
 }
 
 export default function App() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+
   return (
     <>
-      <Header />
+      <Header onLoginClick={() => setIsLoginOpen(true)} />
       <HomePage />
       <Footer />
-      <LoginDialog />
+      <LoginDialog open={isLoginOpen} onClose={() => setIsLoginOpen(false)} onOpenTerms={() => setIsTermsOpen(true)} />
+      <TermsDialog open={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </>
   );
 }
