@@ -543,7 +543,7 @@ function LoginDialog({ open, onClose, onOpenTerms }) {
             <label className="check-row portal-check">
               <input type="checkbox" required />
               <span>
-                I agree to the Ganpat University <a href="#terms" onClick={handleTermsClick}>Terms & Conditions</a> before login.
+                I agree to the Ganpat University admission terms before sign up.
               </span>
             </label>
             <button className="portal-submit" type="button">

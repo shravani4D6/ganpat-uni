@@ -1154,8 +1154,8 @@ select:focus {
   }
 
   .main-nav {
-    min-height: 70px;
-    gap: 10px;
+    min-height: 60px;
+    gap: 8px;
     padding: 0 4vw;
   }
 
@@ -1188,8 +1188,8 @@ select:focus {
   }
 
   .hero {
-    min-height: 620px;
-    padding: 84px 5vw 126px;
+    min-height: calc(100vh - 60px);
+    padding: 56px 5vw 92px;
   }
 
   h1 {
@@ -1232,6 +1232,19 @@ select:focus {
   .portal-brand-pane,
   .portal-form-pane {
     padding: 24px 5vw;
+  }
+
+  .portal-form-pane {
+    gap: 18px;
+  }
+
+  .auth-pane {
+    padding-bottom: 6px;
+  }
+
+  .auth-switch-text {
+    margin-top: 14px;
+    font-size: 0.84rem;
   }
 
   .portal-brand-pane {
