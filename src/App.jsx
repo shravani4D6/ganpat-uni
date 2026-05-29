@@ -104,6 +104,8 @@ function ServicesList({ items, target }) {
 }
 
 function Header({ onLoginClick }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <header className="site-header">
       <div className="notice-bar">
@@ -129,7 +131,19 @@ function Header({ onLoginClick }) {
       <nav className="main-nav" aria-label="Primary navigation">
         <Brand />
 
-        <div className="nav-links is-open">
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((value) => !value)}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
           {[
             ["#about", "About"],
             ["#academics", "Academics"],
@@ -138,7 +152,7 @@ function Header({ onLoginClick }) {
             ["#events", "Events"],
             ["#campus", "Campus Life"],
           ].map(([href, label]) => (
-            <a href={href} key={href}>
+            <a href={href} key={href} onClick={() => setMenuOpen(false)}>
               {label}
             </a>
           ))}
@@ -620,6 +634,10 @@ function LoginDialog({ open, onClose, onOpenTerms }) {
 export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
