@@ -1,23 +1,3 @@
-import { useRef, useState } from "react";
-
-function TermsModal({ open, onClose }) {
-  if (!open) return null;
-  return (
-    <div className="terms-modal-backdrop" onClick={onClose} style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      <div className="terms-modal-content" onClick={e => e.stopPropagation()} style={{background: '#fff', color: '#222', borderRadius: 8, maxWidth: 500, padding: 32, boxShadow: '0 4px 32px rgba(0,0,0,0.18)'}}>
-        <h2>Terms & Conditions</h2>
-        <ul style={{paddingLeft: 20}}>
-          <li>All information provided must be accurate and truthful.</li>
-          <li>Accounts are for personal use only and must not be shared.</li>
-          <li>Do not upload harmful, illegal, or inappropriate content.</li>
-          <li>Respect privacy and do not misuse any data or forms.</li>
-          <li>By registering, you agree to receive communications regarding admissions and student services.</li>
-        </ul>
-        <button onClick={onClose} style={{marginTop: 24, padding: '8px 24px', background: '#ff383f', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer'}}>Close</button>
-      </div>
-    </div>
-  );
-}
 import logoUrl from "../ganpat logo 2.png";
 
 function UserIcon() {
@@ -115,9 +95,7 @@ function ServicesList({ items, target }) {
   );
 }
 
-function Header({ onOpenLogin }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
+function Header() {
   return (
     <header className="site-header">
       <div className="notice-bar">
@@ -143,19 +121,7 @@ function Header({ onOpenLogin }) {
       <nav className="main-nav" aria-label="Primary navigation">
         <Brand />
 
-        <button
-          className="menu-toggle"
-          type="button"
-          aria-label="Open menu"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-
-        <div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
+        <div className="nav-links is-open">
           {[
             ["#about", "About"],
             ["#academics", "Academics"],
@@ -164,13 +130,13 @@ function Header({ onOpenLogin }) {
             ["#events", "Events"],
             ["#campus", "Campus Life"],
           ].map(([href, label]) => (
-            <a href={href} key={href} onClick={() => setMenuOpen(false)}>
+            <a href={href} key={href}>
               {label}
             </a>
           ))}
         </div>
 
-        <button className="student-login-trigger" type="button" onClick={onOpenLogin} aria-label="Open student login">
+        <button className="student-login-trigger" type="button" aria-label="Student login">
           <span className="login-icon" aria-hidden="true">
             <UserIcon />
           </span>
@@ -442,18 +408,9 @@ function Footer() {
   );
 }
 
-function LoginDialog({ dialogRef, authMode, setAuthMode, onClose }) {
-  const [showTerms, setShowTerms] = useState(false);
+function LoginDialog() {
   return (
-    <dialog
-      className="login-dialog"
-      ref={dialogRef}
-      onClick={(event) => {
-        if (event.target === dialogRef.current) {
-          onClose();
-        }
-      }}
-    >
+    <div className="login-dialog">
       <div className="portal-auth">
         <section className="portal-brand-pane">
           <div className="portal-brand-content">
@@ -466,11 +423,11 @@ function LoginDialog({ dialogRef, authMode, setAuthMode, onClose }) {
         </section>
 
         <section className="portal-form-pane">
-          <button className="close-login" type="button" onClick={onClose} aria-label="Close login">
+          <button className="close-login" type="button" aria-label="Close login">
             x
           </button>
 
-          <form className={`auth-pane ${authMode === "signin" ? "active" : ""}`} aria-label="Student sign in form">
+          <form className="auth-pane active" aria-label="Student sign in form">
             <h2>Welcome Back</h2>
             <p className="portal-subtitle">Sign in to access your student portal</p>
             <label>
@@ -496,16 +453,16 @@ function LoginDialog({ dialogRef, authMode, setAuthMode, onClose }) {
             </button>
             <p className="auth-switch-text">
               Do not have an account?{" "}
-              <button type="button" onClick={() => setAuthMode("signup")}>
+              <button type="button">
                 Sign Up
               </button>
             </p>
-            <button className="back-home" type="button" onClick={onClose}>
+            <button className="back-home" type="button">
               Back to Home
             </button>
           </form>
 
-          <form className={`auth-pane ${authMode === "signup" ? "active" : ""}`} aria-label="Student sign up form">
+          <form className="auth-pane active" aria-label="Student sign up form">
             <h2>Create Account</h2>
             <p className="portal-subtitle">Register to get started with your application</p>
             <div className="form-grid two">
@@ -542,7 +499,7 @@ function LoginDialog({ dialogRef, authMode, setAuthMode, onClose }) {
             <label className="check-row portal-check">
               <input type="checkbox" required />
               <span>
-                I agree to the <button type="button" style={{color:'#ff383f',textDecoration:'underline',background:'none',border:'none',padding:0,cursor:'pointer'}} onClick={() => setShowTerms(true)}>Terms & Conditions</button> and Privacy Policy, and authorize Ganpat University to contact me by
+                I agree to the <a href="#terms" style={{color:'#ff383f', textDecoration:'underline'}}>Terms & Conditions</a> and Privacy Policy, and authorize Ganpat University to contact me by
                 Email, SMS, WhatsApp, RCS, or Voice Call regarding admission and student services.
               </span>
             </label>
@@ -551,37 +508,24 @@ function LoginDialog({ dialogRef, authMode, setAuthMode, onClose }) {
             </button>
             <p className="auth-switch-text">
               Already have an account?{" "}
-              <button type="button" onClick={() => setAuthMode("signin")}> 
+              <button type="button">
                 Sign In
               </button>
             </p>
-            <TermsModal open={showTerms} onClose={() => setShowTerms(false)} />
           </form>
         </section>
       </div>
-    </dialog>
+    </div>
   );
 }
 
 export default function App() {
-  const dialogRef = useRef(null);
-  const [authMode, setAuthMode] = useState("signin");
-
-  const openLogin = () => {
-    setAuthMode("signin");
-    dialogRef.current?.showModal();
-  };
-
-  const closeLogin = () => {
-    dialogRef.current?.close();
-  };
-
   return (
     <>
-      <Header onOpenLogin={openLogin} />
+      <Header />
       <HomePage />
       <Footer />
-      <LoginDialog dialogRef={dialogRef} authMode={authMode} setAuthMode={setAuthMode} onClose={closeLogin} />
+      <LoginDialog />
     </>
   );
 }
